@@ -16,6 +16,8 @@ public class Author {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Book> books;
 
+    @ManyToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<LiteraryGenres> literaryGenres;
 
     public Author() {
     }
