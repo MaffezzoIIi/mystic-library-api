@@ -5,6 +5,7 @@ import br.com.mystic.library.mysticlibrary.model.Author;
 import br.com.mystic.library.mysticlibrary.service.AuthorService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +22,7 @@ public class AuthorController {
     }
 
     @GetMapping("/find/{id}")
-    public AuthorDTO findAuthorById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<AuthorDTO> findAuthorById(@PathVariable Long id) throws Exception {
         return authorService.findAuthorById(id);
     }
 }

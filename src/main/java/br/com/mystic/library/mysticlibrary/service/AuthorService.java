@@ -4,7 +4,7 @@ import br.com.mystic.library.mysticlibrary.DTO.AuthorDTO;
 import br.com.mystic.library.mysticlibrary.model.Author;
 import br.com.mystic.library.mysticlibrary.populator.AuthorPopulator;
 import br.com.mystic.library.mysticlibrary.repository.AuthorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -34,13 +34,14 @@ public class AuthorService {
         return AuthorPopulator.populateAuthorDTO(save(toSave));
     }
 
-    public AuthorDTO findAuthorById(Long id) throws Exception {
+    public ResponseEntity<AuthorDTO> findAuthorById(Long id) throws Exception {
         Optional<Author> author = findById(id);
 
-        if(author.isEmpty()) {
-            throw new Exception("Nenhum autor encontrado com este ID");
+        if (author.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
 
-        return AuthorPopulator.populateAuthorDTO(author.get());
+        AuthorDTO authorDTO = AuthorPopulator.populateAuthorDTO(author.get());
+        return ResponseEntity.ok(authorDTO);
     }
 }
