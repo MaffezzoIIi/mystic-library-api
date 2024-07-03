@@ -3,47 +3,44 @@ package br.com.mystic.library.mysticlibrary.controller;
 import br.com.mystic.library.mysticlibrary.DTO.AuthenticationDTO;
 import br.com.mystic.library.mysticlibrary.DTO.LoginResponseDTO;
 import br.com.mystic.library.mysticlibrary.DTO.RegisterDTO;
-import br.com.mystic.library.mysticlibrary.model.Publishing;
+import br.com.mystic.library.mysticlibrary.model.Profile;
 import br.com.mystic.library.mysticlibrary.model.User;
 import br.com.mystic.library.mysticlibrary.repository.UserRepository;
 import br.com.mystic.library.mysticlibrary.service.AuthenticationService;
 import br.com.mystic.library.mysticlibrary.service.JwtService;
+import br.com.mystic.library.mysticlibrary.service.LoginService;
+import br.com.mystic.library.mysticlibrary.service.ProfileService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-
-    private final AuthenticationManager authenticationManager;
-
+    private final LoginService loginService;
     private final UserRepository userRepository;
+    private ProfileService profileService;
 
-    private final JwtService jwtService;
 
-    public AuthenticationController(AuthenticationService authenticationService, AuthenticationManager authenticationManager, UserRepository userRepository, JwtService jwtService) {
+    public AuthenticationController(AuthenticationService authenticationService, AuthenticationManager authenticationManager, UserRepository userRepository, JwtService jwtService, LoginService loginService, ProfileService profileService) {
         this.authenticationService = authenticationService;
-        this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.jwtService = jwtService;
+        this.loginService = loginService;
+        this.profileService = profileService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO authentication) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(authentication.username(), authentication.password());
-        Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-
-        String token = jwtService.generateToken((User) authenticate.getPrincipal());
-
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO authentication) {
+        return ResponseEntity.ok(loginService.login(authentication));
     }
 
     @PostMapping("/register")
@@ -55,6 +52,7 @@ public class AuthenticationController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
 
         User user = new User(registerDTO.username(), encryptedPassword, registerDTO.role());
+        user.setProfile(profileService.createDefaultProfile(user));
 
         this.userRepository.save(user);
 

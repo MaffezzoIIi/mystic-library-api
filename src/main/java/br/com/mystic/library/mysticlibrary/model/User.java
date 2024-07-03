@@ -18,6 +18,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
@@ -25,9 +27,15 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     private String username;
+
     private String password;
+
     private UserRole role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile;
 
     public User(String username, String encryptedPassword, UserRole role) {
         this.username = username;
@@ -73,4 +81,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
