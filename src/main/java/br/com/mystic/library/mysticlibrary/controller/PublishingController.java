@@ -1,4 +1,4 @@
-package com.seuprojeto.controller;
+package br.com.mystic.library.mysticlibrary.controller;
 
 import br.com.mystic.library.mysticlibrary.model.Publishing;
 import br.com.mystic.library.mysticlibrary.service.PublishingService;
