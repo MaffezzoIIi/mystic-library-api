@@ -18,6 +18,29 @@ public class LiteraryGenres {
     private List<Author> author;
 
     public LiteraryGenres() {
-
     };
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public List<Author> getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(List<Author> author) {
+        this.author = author;
+    }
 }

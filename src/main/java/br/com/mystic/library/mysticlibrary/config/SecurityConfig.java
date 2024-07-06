@@ -43,12 +43,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/author/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/authors/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/authors/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/publishings/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/publishings/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/books/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
     }
 
     @Bean
